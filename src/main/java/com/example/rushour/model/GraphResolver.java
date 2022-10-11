@@ -18,20 +18,29 @@ public class GraphResolver {
         visitedNodes = new ArrayDeque<>();
     }
 
-    public ArrayDeque<Pair<Integer, Integer>> resolveGraph () {
-        //compute the following only if (graph.hasSolution())
-        nodesToVisit.add(new Pair<>(0,0));
-        while (!nodesToVisit.isEmpty()) {
-            HashSet<Integer> neighboursIds = this.getDistinctNeighboursLinksFromNodeWithId(nodesToVisit.getFirst().getKey());
-            for (Integer neighbourId : neighboursIds) {
-                if (!alreadyHasBeenVisited(neighbourId)) {
-                    this.nodesToVisit.add(new Pair<>(neighbourId, nodesToVisit.getFirst().getKey()));
+    public void resolveGraph () throws Exception {
+        if (graph.hasSolution()) {
+            int solutionNodeId = graph.getSolutionNode().get().getId();
+            nodesToVisit.add(new Pair<>(0, 0));
+            while (!nodesToVisit.isEmpty()) {
+                HashSet<Integer> neighboursIds = this.getDistinctNeighboursLinksFromNodeWithId(nodesToVisit.getFirst().getKey());
+                for (Integer neighbourId : neighboursIds) {
+                    if (!alreadyHasBeenVisited(neighbourId)) {
+                        this.nodesToVisit.add(new Pair<>(neighbourId, nodesToVisit.getFirst().getKey()));
+                    }
+                }
+                Pair<Integer, Integer> visited = this.nodesToVisit.pollFirst();
+                visitedNodes.add(visited);
+                if (visited.getKey() == solutionNodeId || visited.getValue() == solutionNodeId) {
+                    return;
                 }
             }
-            Pair<Integer, Integer> visited = this.nodesToVisit.pollFirst();
-            visitedNodes.add(visited);
+        } else {
+            throw new Exception("The graph have no solution");
         }
+    }
 
+    public ArrayDeque<Pair<Integer, Integer>> getSolutionFromAlgorithm() {
         ArrayDeque<Pair<Integer, Integer>> solution = new ArrayDeque<>();
         Pair<Integer, Integer> visited = visitedNodes.pollLast();
         int precedentNodeIdToSolution = visited.getValue();
@@ -55,7 +64,7 @@ public class GraphResolver {
         return false;
     }
 
-    HashSet<Integer> getDistinctNeighboursLinksFromNodeWithId(int id) {
+    private HashSet<Integer> getDistinctNeighboursLinksFromNodeWithId(int id) {
         HashSet<Integer> links = new HashSet<>();
         for (Pair<Integer,Integer> link : graph.getNodesLinks()) {
             if (link.getKey() == id && !links.contains(link.getValue())) {

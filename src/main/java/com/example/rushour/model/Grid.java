@@ -28,6 +28,14 @@ public class Grid {
         this.vehicles = vehicles;
     }
 
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
     public void setHeight(int height) {
         this.height = height;
     }

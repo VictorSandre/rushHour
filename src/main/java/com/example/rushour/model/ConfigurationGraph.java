@@ -2,6 +2,7 @@ package com.example.rushour.model;
 
 import javafx.util.Pair;
 import java.util.HashSet;
+import java.util.Optional;
 
 public class ConfigurationGraph {
     private final HashSet<Configuration> nodes;
@@ -62,10 +63,34 @@ public class ConfigurationGraph {
         return false;
     }
 
+    public boolean hasSolution() {
+        return this.getSolutionNode().isPresent();
+    }
+
     private Configuration getCurrentConfiguration(int currentNodeId) {
          return this.nodes.stream()
                  .filter((configuration) -> configuration.getId() == currentNodeId)
                  .findAny()
                  .get();
+    }
+
+    //todo test
+    public Optional<Configuration> getNodeById(int id) {
+        for (Configuration node: this.nodes) {
+            if (node.getId() == id) {
+                return Optional.of(node);
+            }
+        }
+        return Optional.empty();
+    }
+
+    //Todo test
+    public Optional<Configuration> getSolutionNode() {
+        for (Configuration node : nodes) {
+            if (node.isSolution()) {
+                return Optional.of(node);
+            }
+        }
+        return Optional.empty();
     }
 }
